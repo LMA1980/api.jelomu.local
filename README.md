@@ -1,3 +1,4 @@
+[![rust-clippy analyze](https://github.com/LMA1980/api.jelomu.local/actions/workflows/rust-clippy.yml/badge.svg)](https://github.com/LMA1980/api.jelomu.local/actions/workflows/rust-clippy.yml)
 # api.jelomu.local - a study using Rust Rocket Framework
 
 ## _Disclaimer:_
