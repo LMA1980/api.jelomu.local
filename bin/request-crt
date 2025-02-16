@@ -1,0 +1,62 @@
+car#!/usr/bin/env bash
+PROJECT_LOCATION=`dirname "${0}"`
+PROJECT_LOCATION=`realpath "${PROJECT_LOCATION}"`
+PROJECT_LOCATION=`dirname "${PROJECT_LOCATION}"`
+SITE_FQDN="api.jelomu.local"
+echo "Project location: ${PROJECT_LOCATION}"
+CERTIFICATE_LOCATION="${PROJECT_LOCATION}/.cert"
+CA_PRIVKEY_LOCATION="${CERTIFICATE_LOCATION}/ca.jelomu.local.key"
+CA_PUBKEY_LOCATION="${CERTIFICATE_LOCATION}/ca.jelomu.local.pem"
+CA_CONFIG_LOCATION="${PROJECT_LOCATION}/ca.cert.conf"
+
+PRIVKEY_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.key"
+PUBKEY_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.pem"
+
+CSR_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.csr"
+CRT_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.crt"
+CONFIG_LOCATION="${PROJECT_LOCATION}/server.cert.conf"
+
+if [ -f "${CONFIG_LOCATION}" ]; then
+	if [ ! -d "${CERTIFICATE_LOCATION}" ]; then
+		mkdir -p "${CERTIFICATE_LOCATION}"
+		chmod u+rwx,go-rwx "${CERTIFICATE_LOCATION}"
+	fi;
+	if [ ! -f "${CA_PRIVKEY_LOCATION}" ]; then
+		# Generate the ED25519 private/public key pair
+		openssl genpkey -algorithm EC -out "${CA_PRIVKEY_LOCATION}" \
+			-pkeyopt ec_paramgen_curve:secp384r1 \
+       			-pkeyopt ec_param_enc:named_curve
+		openssl req -x509 -config "${CA_CONFIG_LOCATION}" -new -nodes \
+			-key "${CA_PRIVKEY_LOCATION}" \
+			-days 10958 -out "${CA_PUBKEY_LOCATION}"
+	fi;
+	if [ ! -f "${PRIVKEY_LOCATION}" ]; then
+		openssl genpkey -algorithm EC -out "${PRIVKEY_LOCATION}" \
+			-pkeyopt ec_paramgen_curve:secp384r1 \
+       			-pkeyopt ec_param_enc:named_curve
+	fi;
+	if ([ ! -f "${CSR_LOCATION}" ] && [ -f "${PRIVKEY_LOCATION}" ]); then
+		# Generate the certificate request
+		openssl req -new -config "${CONFIG_LOCATION}" \
+			-key "${PRIVKEY_LOCATION}" -out "${CSR_LOCATION}"
+	fi;
+	if [ -f "${CSR_LOCATION}" ]; then
+		# Confirm the certificate request
+		openssl req -in "${CSR_LOCATION}" -text -noout
+		# Self-signed the certificate request 
+		# to create our TLS certificate
+		openssl x509 -req -days 90 -in "${CSR_LOCATION}" \
+			-CAcreateserial -CA "${CA_PUBKEY_LOCATION}" \
+			-CAkey "${CA_PRIVKEY_LOCATION}" \
+			-out "${CRT_LOCATION}" -sha512 \
+			-extfile "${CONFIG_LOCATION}" \
+			-extensions req_extensions
+	fi;
+	if [ -f "${CRT_LOCATION}" ]; then
+		openssl x509 -in "${CRT_LOCATION}" -text -noout
+	fi;
+	echo "CSR location: ${CSR_LOCATION}"
+	echo "CRT location: ${CRT_LOCATION}"
+else
+	echo "${CONFIG_LOCATION} is required"
+fi;

@@ -1,0 +1,9 @@
+[package]
+name = "webapi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["http2", "json", "msgpack", "secrets", "tls", "uuid"] }
+serde = { version = "1.0.217", features = ["alloc", "derive", "rc"] }
+serde_json = { version = "1.0.138", features = ["alloc", "indexmap", "preserve_order", "raw_value"] }
