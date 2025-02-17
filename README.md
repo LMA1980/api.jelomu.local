@@ -31,9 +31,23 @@
 First, _serious_ implementation using Rust and Rocket: I am a beginner at Rust and Rocky 
 appeared to provide the most strait forward solution.
 
-Milestone 1:
-    Provide a public interface.
-    [x] About (json)
-    [ ] Online Documentation (Html)
-    [ ] Authenticate
-    [ ] Authorisation
+### Milestone 1:
+Provide a public interface.
+
+- [x] About (json)
+- [ ] Online Documentation (Html) <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
+- [ ] Authenticate <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
+- [ ] Authorisation <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
+- [ ] Test suite <span style="background-color: #55BF55; color: black">&ensp;in-progress&ensp;</span>
+- [ ] Benchmark suite <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
+
+### Working on:
+@LMA1980: Test suite
+
+## Development workflow:
+Using tmux, I start as many cargo watch I require on that day. In general, it means to have at least
+```cargo watch --clear --exec build --exec "build --release"```,
+```cargo watch --clear --exec test"```,
+```cargo watch --clear --exec run --watch target/debug"```,
+(optionally)
+```cargo watch --clear --exec clippy"```
