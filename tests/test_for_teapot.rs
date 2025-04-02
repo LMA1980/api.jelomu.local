@@ -21,7 +21,7 @@ mod tests {
     use crate::webapi;
 
     #[rocket::tokio::test]  // Use tokio for asynchronous tests (reqwest is async)
-    async fn test_request_get_about_data() {
+    pub async fn test_request_get_about_data() {
         let client: Client = Client::untracked(rocket::build()
             .mount("/", routes![webapi::about::get_about])).await.unwrap();
         let response = client.get("/about")
@@ -38,7 +38,7 @@ mod tests {
         });
     }
     #[rocket::tokio::test]  // Use tokio for asynchronous tests (reqwest is async)
-    async fn test_request_get_about_httpcode_im_a_teapot() {
+    pub async fn test_request_get_about_httpcode_im_a_teapot() {
         let client: Client = Client::untracked(rocket::build()
             .mount("/", routes![webapi::about::get_about])).await.unwrap();
         let response = client.get("/about")
@@ -47,7 +47,7 @@ mod tests {
     }
 
     #[rocket::tokio::test]  // Use tokio for asynchronous tests (reqwest is async)
-    async fn test_request_get_about_contenttype_json() {
+    pub async fn test_request_get_about_contenttype_json() {
         let client: Client = Client::untracked(rocket::build()
             .mount("/", routes![webapi::about::get_about])).await.unwrap();
         let response = client.get("/about")

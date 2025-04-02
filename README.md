@@ -2,6 +2,7 @@
 # api.jelomu.local - a study using Rust Rocket Framework
 
 ## _Disclaimer:_
+
 > Provided along is a tool for helping to configure a study environment where 
 > security is as secure you can make it and _definitely not for a public usage_ though.
 > 
@@ -38,7 +39,7 @@ Provide a public interface.
 - [ ] Online Documentation (Html) <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
 - [ ] Authenticate <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
 - [ ] Authorisation <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
-- [ ] Test suite <span style="background-color: #55BF55; color: black">&ensp;in-progress&ensp;</span>
+- [x] Test suite
 - [ ] Benchmark suite <span style="background-color: #5555BF; color: black">&ensp;study&ensp;</span>
 
 ### Working on:

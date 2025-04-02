@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+PROJECT_LOCATION=$(dirname "${0}")
+PROJECT_LOCATION=$(realpath "${PROJECT_LOCATION}")
+PROJECT_LOCATION=$(dirname "${PROJECT_LOCATION}")
+SITE_FQDN="api.jelomu.local"
+echo "Project location: ${PROJECT_LOCATION}"
+CERTIFICATE_LOCATION="${PROJECT_LOCATION}/.cert"
+PKEY_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.key"
+CSR_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.renew.csr"
+CRT_LOCATION="${CERTIFICATE_LOCATION}/${SITE_FQDN}.crt"
+# renew request
+openssl x509 -x509toreq -in "${CERTIFICATE_LOCATION}" -out "${CSR_LOCATION}" \
+	-signkey "${PKEY_LOCATION}"
+openssl req -in "${CSR_LOCATION}" -text -noout
+# renew certificate
+openssl x509 -req -days 90 -in "${CSR_LOCATION}" \
+	-signkey "${PKEY_LOCATION}" -out "${CRT_LOCATION}"
+openssl x509 -in "${CRT_LOCATION}" -text -noout
