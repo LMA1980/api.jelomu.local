@@ -1,12 +1,12 @@
-#[cfg(not(test))]
-#[allow(unused_imports)]
-#[macro_use] extern crate rocket;
-#[cfg(not(test))]
-#[allow(unused_imports)]
-#[macro_use] extern crate serde;
-#[cfg(not(test))]
-#[allow(unused_imports)]
-#[macro_use] extern crate serde_json;
+// #[cfg(not(test))]
+// #[allow(unused_imports)]
+// #[macro_use] extern crate rocket;
+// #[cfg(not(test))]
+// #[allow(unused_imports)]
+// #[macro_use] extern crate serde;
+// #[cfg(not(test))]
+// #[allow(unused_imports)]
+// #[macro_use] extern crate serde_json;
 #[allow(unused_imports)]
 use rocket::{get, launch, routes, catchers, uri, Build, Rocket, http::{ext, hyper, uncased, uri}};
 #[allow(unused_imports)]
@@ -36,9 +36,9 @@ pub fn rocket() -> Rocket<Build> {
             "android-chrome-512"    => "rsrc/io.favicon/emoji/Zzz/android-chrome-512x512.png",
             "apple-touch-icon"      => "rsrc/io.favicon/emoji/Zzz/apple-touch-icon.png",
         ))
-        .mount("/", routes![favicon, favicon_png_16s, favicon_png_16,
+        .mount("/", rocket::routes![favicon, favicon_png_16s, favicon_png_16,
                             favicon_png_32s, favicon_png_32,
                             favicon_png_192, favicon_png_512,
                             favicon_png_apple, ])
-        .mount("/", routes![about::get_about])
+        .mount("/", rocket::routes![about::get_about])
 }

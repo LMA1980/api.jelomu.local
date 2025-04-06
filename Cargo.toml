@@ -9,9 +9,9 @@ path = "src/main.rs"
 doc = false
 
 [dev-dependencies]
-tokio = "1.43.*"
 serde_json = "1.0.*"
-criterion = "0.5.*"
+criterion = { version = "0.5.1", features = ["async_futures"] }
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
 
 [[bench]]
 name = "bench_lib_about"
@@ -23,3 +23,4 @@ rocket = { version = "0.5.1", features = ["http2", "json", "msgpack", "secrets",
 rocket-include-static-resources = "0.10.5"
 serde = { version = "1.0.217", features = ["alloc", "derive", "rc"] }
 serde_json = { version = "1.0.138", features = ["alloc", "indexmap", "preserve_order", "raw_value"] }
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
