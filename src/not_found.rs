@@ -1,3 +1,5 @@
+use super::locales::I18nHelper;
+use i18n_embed_fl::fl;
 use rocket::http::{ContentType, Status};
 use rocket::{catch, serde::json::Json, Request};
 use serde::Serialize;
@@ -15,18 +17,22 @@ pub struct ProblemDetails {
 
 #[allow(unused)]
 #[catch(404)]
-pub fn not_found(req: &Request) -> (Status, (ContentType, Json<ProblemDetails>)) {
+pub fn not_found(status: Status, req: &Request) -> (Status, (ContentType, Json<ProblemDetails>)) {
     // 1. Get the path the user actually typed
     let path = req.uri().path().as_str();
 
     // 2. Build your documentation link (Optional: replace with your actual domain)
     let error_type = format!("https://api.localhost.local/errors/not-found?path={}", path);
+    let i18n: &I18nHelper = req
+        .rocket()
+        .state::<I18nHelper>()
+        .expect("I18nHelper not managed in Rocket");
 
     let problem = ProblemDetails {
         _type: error_type,
         title: "Endpoint Not Found".to_string(),
         status: 404,
-        detail: format!("No resource exists at the requested path: {}", path),
+        detail: fl!(i18n.loader, "not_found_detail", path = path),
         instance: path.to_string(), // The specific URI that caused the error
     };
 
