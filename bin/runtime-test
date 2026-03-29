@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+clear;
+echo ==== expect 404 ====; 
+curl \
+    -H Content-Type: application/json \
+    --silent \
+    --insecure \
+    -X GET \
+    https://api.localhost.local:4443/foo \
+    | jq; 
+echo ==== about[200] ====;
+curl \
+    -H Content-Type: application/json \
+    --silent \
+    --insecure \
+    -X GET \
+    https://api.localhost.local:4443/about \
+    | jq;
