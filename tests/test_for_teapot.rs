@@ -86,3 +86,4 @@ pub async fn test_request_get_about_contenttype_json() {
     .unwrap();
     let response = client.get("/about").dispatch().await;
     assert_eq!(response.content_type(), Some(ContentType::JSON));
+}
