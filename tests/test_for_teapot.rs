@@ -48,8 +48,18 @@ pub async fn test_request_get_about_data() {
 }
 #[rocket::tokio::test] // Use tokio for asynchronous tests (reqwest is async)
 pub async fn test_request_get_about_httpcode_im_a_teapot() {
+    let loader: i18n_embed::fluent::FluentLanguageLoader =
+        i18n_embed::fluent::fluent_language_loader!();
+    loader
+        .load_languages(
+            &jeroapi::locales::Localizations,
+            &[loader.fallback_language().clone()],
+        )
+        .expect("Failed to load languages");
     let client: Client = Client::untracked(
-        rocket::build().mount("/", rocket::routes![jeroapi::about::rocket::get_about]),
+        rocket::build()
+            .manage(I18n { loader })
+            .mount("/", rocket::routes![jeroapi::about::rocket::get_about]),
     )
     .await
     .unwrap();
@@ -59,11 +69,20 @@ pub async fn test_request_get_about_httpcode_im_a_teapot() {
 
 #[rocket::tokio::test] // Use tokio for asynchronous tests (reqwest is async)
 pub async fn test_request_get_about_contenttype_json() {
+    let loader: i18n_embed::fluent::FluentLanguageLoader =
+        i18n_embed::fluent::fluent_language_loader!();
+    loader
+        .load_languages(
+            &jeroapi::locales::Localizations,
+            &[loader.fallback_language().clone()],
+        )
+        .expect("Failed to load languages");
     let client: Client = Client::untracked(
-        rocket::build().mount("/", rocket::routes![jeroapi::about::rocket::get_about]),
+        rocket::build()
+            .manage(I18n { loader })
+            .mount("/", rocket::routes![jeroapi::about::rocket::get_about]),
     )
     .await
     .unwrap();
     let response = client.get("/about").dispatch().await;
     assert_eq!(response.content_type(), Some(ContentType::JSON));
-}
