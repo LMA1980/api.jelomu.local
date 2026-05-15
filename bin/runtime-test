@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+function ctrl_c {
+    exit 0;
+}
+# Set the trap: call the ctrl_c function upon receiving SIGINT
+trap 'ctrl_c' SIGINT
+while true; do
+    clear;
+    echo ==== expect 404 ====; 
+    curl \
+        -H Content-Type: application/json \
+        --silent \
+        --insecure \
+        -X GET \
+        https://api.localhost.local:4443/foo \
+        | jq; 
+    echo ==== about[200] ====;
+    curl \
+        -H Content-Type: application/json \
+        --silent \
+        --insecure \
+        -X GET \
+        https://api.localhost.local:4443/about \
+        | jq;
+    sleep 15;
+done

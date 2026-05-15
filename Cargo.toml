@@ -1,26 +1,34 @@
 [package]
-name = "webapi"
+name = "jeroapi"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "webapi-daemon"
-path = "src/main.rs"
+name = "jero-api-daemon"
+path = "src/bin/jero-api-daemon.rs"
 doc = false
 
-[dev-dependencies]
-serde_json = "1.0.*"
-criterion = { version = "0.5.1", features = ["async_futures"] }
-tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
-
 [[bench]]
-name = "bench_lib_about"
+name = "jero-api-bench"
 harness = false
 
 [dependencies]
-futures = { version = "0.3.31", features = ["alloc", "async-await", "executor", "std", "futures-executor"] }
-rocket = { version = "0.5.1", features = ["http2", "json", "msgpack", "secrets", "tls", "uuid"] }
-rocket-include-static-resources = "0.10.5"
-serde = { version = "1.0.217", features = ["alloc", "derive", "rc"] }
-serde_json = { version = "1.0.138", features = ["alloc", "indexmap", "preserve_order", "raw_value"] }
+futures = { version = "0.3.*", features = ["alloc", "async-await", "executor", "std", "futures-executor"] }
+serde = { version = "1.0.*", features = ["alloc", "derive", "rc"] }
+serde_json = { version = "1.0.*", features = ["alloc", "indexmap", "preserve_order", "raw_value"] }
 tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
+rocket = { git = "https://github.com/rwf2/Rocket.git", branch = "master", features = ["http2", "json", "msgpack", "mtls", "s2n-quic", "s2n-quic-h3", "secrets", "tls", "uuid", "x509-parser"] }
+# The core embedding logic
+i18n-embed = { version = "0.16", features = ["fluent-system", "desktop-requester"] }
+# The actual embedding macro
+rust-embed = "8.0"
+# For language identifiers (en-US, etc.)
+unic-langid = "0.9"
+# High-level macro for compile-time safety
+i18n-embed-fl = "0.10"
+
+[dev-dependencies]
+serde_json = "1.0.*"
+criterion = { version = "0.8.*", features = ["async_futures"] }
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
+
