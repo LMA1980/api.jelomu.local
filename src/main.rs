@@ -1,44 +1,45 @@
-// #[cfg(not(test))]
-// #[allow(unused_imports)]
-// #[macro_use] extern crate rocket;
-// #[cfg(not(test))]
-// #[allow(unused_imports)]
-// #[macro_use] extern crate serde;
-// #[cfg(not(test))]
-// #[allow(unused_imports)]
-// #[macro_use] extern crate serde_json;
 #[allow(unused_imports)]
-use rocket::{get, launch, routes, catchers, uri, Build, Rocket, http::{ext, hyper, uncased, uri}};
+use i18n_embed::{
+    fluent::{fluent_language_loader, FluentLanguageLoader},
+    select, LanguageLoader,
+};
 #[allow(unused_imports)]
-use rocket_include_static_resources::{static_resources_initializer, static_response_handler};
-#[warn(unused_imports)]
+use i18n_embed_fl::fl;
+#[allow(unused_imports)]
+use rocket::{
+    catchers,
+    fs::{relative, FileServer},
+    launch,
+    serde::json::Json,
+    Build, Rocket, State,
+};
+#[allow(unused_imports)]
+use rust_embed::RustEmbed;
+
 pub mod about;
-static_response_handler! {
-    "/favicon.ico"                  => favicon              => "favicon",
-    "/favicon-16.png"               => favicon_png_16s      => "favicon-png-16",
-    "/favicon-16x16.png"            => favicon_png_16       => "favicon-png-16",
-    "/favicon-32.png"               => favicon_png_32s      => "favicon-png-32",
-    "/favicon-32x32.png"            => favicon_png_32       => "favicon-png-32",
-    "/android-chrome-192x192.png"   => favicon_png_192      => "android-chrome-192",
-    "/android-chrome-512x512.png"   => favicon_png_512      => "android-chrome-512",
-    "/apple-touch-icon.png"         => favicon_png_apple    => "apple-touch-icon",
-}
+pub mod locales;
+pub mod not_found;
+
+#[allow(unused_imports)]
+use self::locales::{I18nHelper, Localizations};
 
 #[cfg(not(test))]
 #[launch]
 pub fn rocket() -> Rocket<Build> {
+    // Initialize the loader
+    let loader: FluentLanguageLoader = fluent_language_loader!();
+
+    // Load all languages from the embedded assets
+    loader
+        .load_languages(&Localizations, &[loader.fallback_language().clone()])
+        .expect("Failed to load languages");
+
     rocket::build()
-        .attach(static_resources_initializer!(
-            "favicon"               => "rsrc/io.favicon/emoji/Zzz/favicon.ico",
-            "favicon-png-16"        => "rsrc/io.favicon/emoji/Zzz/favicon-16x16.png",
-            "favicon-png-32"        => "rsrc/io.favicon/emoji/Zzz/favicon-32x32.png",
-            "android-chrome-192"    => "rsrc/io.favicon/emoji/Zzz/android-chrome-192x192.png",
-            "android-chrome-512"    => "rsrc/io.favicon/emoji/Zzz/android-chrome-512x512.png",
-            "apple-touch-icon"      => "rsrc/io.favicon/emoji/Zzz/apple-touch-icon.png",
-        ))
-        .mount("/", rocket::routes![favicon, favicon_png_16s, favicon_png_16,
-                            favicon_png_32s, favicon_png_32,
-                            favicon_png_192, favicon_png_512,
-                            favicon_png_apple, ])
+        .manage(I18nHelper { loader })
+        .mount(
+            "/",
+            FileServer::new(relative!("rsrc/io.favicon/emoji/Zzz/")),
+        )
         .mount("/", rocket::routes![about::get_about])
+        .register("/", catchers![not_found::not_found])
 }
