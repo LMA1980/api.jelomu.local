@@ -5,11 +5,11 @@ edition = "2021"
 
 [[bin]]
 name = "jero-api-daemon"
-path = "src/main.rs"
+path = "src/bin/jero-api-daemon.rs"
 doc = false
 
 [[bench]]
-name = "bench_lib_about"
+name = "jero-api-bench"
 harness = false
 
 [dependencies]
@@ -19,13 +19,13 @@ serde_json = { version = "1.0.*", features = ["alloc", "indexmap", "preserve_ord
 tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] } 
 rocket = { git = "https://github.com/rwf2/Rocket.git", branch = "master", features = ["http2", "json", "msgpack", "mtls", "s2n-quic", "s2n-quic-h3", "secrets", "tls", "uuid", "x509-parser"] }
 # The core embedding logic
-i18n-embed = { version = "0.15", features = ["fluent-system", "desktop-requester"] }
+i18n-embed = { version = "0.16", features = ["fluent-system", "desktop-requester"] }
 # The actual embedding macro
 rust-embed = "8.0"
 # For language identifiers (en-US, etc.)
 unic-langid = "0.9"
 # High-level macro for compile-time safety
-i18n-embed-fl = "0.9"
+i18n-embed-fl = "0.10"
 
 [dev-dependencies]
 serde_json = "1.0.*"

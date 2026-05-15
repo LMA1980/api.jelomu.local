@@ -1,3 +1,10 @@
+#[macro_use]
+extern crate rocket;
+use rocket::{
+    fs::{relative, FileServer},
+    Build, Rocket,
+};
+
 #[allow(unused_imports)]
 use i18n_embed::{
     fluent::{fluent_language_loader, FluentLanguageLoader},
@@ -5,25 +12,24 @@ use i18n_embed::{
 };
 #[allow(unused_imports)]
 use i18n_embed_fl::fl;
-#[allow(unused_imports)]
-use rocket::{
-    catchers,
-    fs::{relative, FileServer},
-    launch,
-    serde::json::Json,
-    Build, Rocket, State,
-};
+//use rocket::{
+//    self, catchers,
+//    fs::{relative, FileServer},
+//    launch,
+//    serde::json::Json,
+//    Build, Rocket, State,
+//};
 #[allow(unused_imports)]
 use rust_embed::RustEmbed;
 
-pub mod about;
-pub mod locales;
-pub mod not_found;
-
 #[allow(unused_imports)]
-use self::locales::{I18nHelper, Localizations};
+use jeroapi::{
+    self,
+    about::rocket::get_about,
+    locales::{I18n, Localizations},
+    not_found::not_found,
+};
 
-#[cfg(not(test))]
 #[launch]
 pub fn rocket() -> Rocket<Build> {
     // Initialize the loader
@@ -35,11 +41,11 @@ pub fn rocket() -> Rocket<Build> {
         .expect("Failed to load languages");
 
     rocket::build()
-        .manage(I18nHelper { loader })
+        .manage(I18n { loader })
         .mount(
             "/",
             FileServer::new(relative!("rsrc/io.favicon/emoji/Zzz/")),
         )
-        .mount("/", rocket::routes![about::get_about])
-        .register("/", catchers![not_found::not_found])
+        .mount("/", rocket::routes![get_about])
+        .register("/", catchers![not_found])
 }

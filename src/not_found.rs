@@ -1,4 +1,4 @@
-use super::locales::I18nHelper;
+use super::locales::I18n;
 use i18n_embed_fl::fl;
 use rocket::http::{ContentType, Status};
 use rocket::{catch, serde::json::Json, Request};
@@ -23,10 +23,10 @@ pub fn not_found(status: Status, req: &Request) -> (Status, (ContentType, Json<P
 
     // 2. Build your documentation link (Optional: replace with your actual domain)
     let error_type = format!("https://api.localhost.local/errors/not-found?path={}", path);
-    let i18n: &I18nHelper = req
+    let i18n: &I18n = req
         .rocket()
-        .state::<I18nHelper>()
-        .expect("I18nHelper not managed in Rocket");
+        .state::<I18n>()
+        .expect("I18n not managed in Rocket");
 
     let problem = ProblemDetails {
         _type: error_type,

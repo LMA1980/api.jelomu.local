@@ -7,6 +7,6 @@ use rust_embed::RustEmbed;
 #[folder = "rsrc/i18n/"]
 pub struct Localizations;
 
-pub struct I18nHelper {
+pub struct I18n {
     pub loader: FluentLanguageLoader,
 }
